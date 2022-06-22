@@ -134,7 +134,7 @@ struct Data_road
     }
 };
 
-void Read_XLSX_file(std::string path, std::vector<Data_node>* vector_node, std::vector<Data_road>* road_vector);
+void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector);
 void Read_YAML_file(std::string path, std::vector<Geographic_point>* info_brut);
 void Write_XLSX_file(std::string path,std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector);
 void Read_JPG_file(std::string path, cv::Mat& img);

@@ -2,7 +2,7 @@
 #include <OpenXLSX.hpp>
 #include <bits/stdc++.h>
 
-void Read_XLSX_file(std::string path, std::vector<Data_node>* vector_node, std::vector<Data_road>* road_vector)
+void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector)
 {
     OpenXLSX::XLDocument doc;
     doc.open(path);
@@ -33,7 +33,7 @@ void Read_XLSX_file(std::string path, std::vector<Data_node>* vector_node, std::
         if(!end) break;
 
         Data_node new_data(id, longitude, latitude);
-        vector_node->push_back(new_data);
+        vector_node.push_back(new_data);
     }
 
     // ADD ROAD.
@@ -77,16 +77,21 @@ void Read_XLSX_file(std::string path, std::vector<Data_node>* vector_node, std::
         if(!end) break;
 
         Data_node* tempo_save;
-        for(int i = 0; i < vector_node->size(); i++)
+        for(int i = 0; i < vector_node.size(); i++)
         {
-            if(id_pointA == vector_node->at(i).node_ID) { tempo_save = &vector_node->at(i); break;}
+            if(id_pointA == vector_node[i].node_ID) { tempo_save = &vector_node[i]; break;}
         }
-        for(int i = 0; i < vector_node->size(); i++)
+        for(int i = 0; i < vector_node.size(); i++)
         {
-            if(id_pointB == vector_node->at(i).node_ID)
+            if(id_pointB == vector_node[i].node_ID)
             {
-                Data_road new_road(id_road, tempo_save, &vector_node->at(i));
-                road_vector->push_back(new_road);
+                Data_road new_road(id_road, tempo_save, &vector_node[i]);
+                new_road.available = available;
+                new_road.deg_to_A = deg_to_A;
+                new_road.deg_to_B = deg_to_B;
+                new_road.length = length;
+                new_road.max_speed = speed;
+                road_vector.push_back(new_road);
             }
         }
     }

@@ -392,7 +392,7 @@ int main()
     Read_YAML_file("../data/map_information.yaml", &ref_border);
 
     // STEP 2 : Collect "node" data from XLSX database.
-    Read_XLSX_file("../data/Hive_Map_Database2.xlsx", &node_vector, &road_vector);
+    Read_XLSX_file("../data/Hive_Map_Database2.xlsx", node_vector, road_vector);
 
     // STEP 3 : Import map of the La Defense.
     Read_JPG_file("../data/02_LaDefense.jpg", map_current);
