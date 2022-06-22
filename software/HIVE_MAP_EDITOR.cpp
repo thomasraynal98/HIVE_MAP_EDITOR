@@ -8,6 +8,7 @@
 #include <thread>
 #include <chrono>
 #include <bits/stdc++.h>
+#include <vector>
 
 #include "useful.h"
 
@@ -18,6 +19,7 @@ std::vector<Data_node> node_vector;
 std::vector<Data_road> road_vector;
 cv::Mat map_current, map_current_copy, map_data; 
 
+bool opt_speed_view = false;
 int selection      = -1;
 int selection_ID   = -1;
 int selection_ID_2 = -1;
@@ -69,6 +71,77 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
             }
         }
 
+        if(phase_Value == 1 && selection_ID > 1000)
+        {
+            if(validation_area.is_in(x, y))
+            {
+                int option_selection = validation_area.option_selection(x, y);
+                
+                if(option_selection == 1)
+                {
+                    // CLOSE ROAD
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID)
+                        {
+                            if(road_vector[i].available) road_vector[i].available = false;
+                            else{road_vector[i].available = true;}
+                            break;
+                        }
+                    }
+                }
+                if(option_selection == 2)
+                {
+                    // DELETE ROAD
+                    int index = -1;
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID) { index = i; break;}
+                    }
+                    road_vector.erase(road_vector.begin() + index);
+                }
+                if(option_selection == 3)
+                {
+                    // LOW ROAD
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 3.001; break;}
+                    }
+                }
+                if(option_selection == 4)
+                {
+                    // MID ROAD
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 7.001; break;}
+                    }
+                }
+                if(option_selection == 5)
+                {
+                    // HIGH ROAD
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 10.001; break;}
+                    }
+                }
+                if(option_selection == 6)
+                {
+                    // INFO
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID)
+                        {
+                            std::cout << "ROAD : " << road_vector[i].road_ID << " | " << "SPEED : " << road_vector[i].max_speed << " | " << \
+                            "LENGTH : " << road_vector[i].length << " | " << " STATE : ";
+                            if(road_vector[i].available) std::cout << "OPEN" << std::endl;
+                            else { std::cout << "CLOSE" << std::endl; }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         if(intensity != 0)
         {
             selection = intensity;
@@ -99,7 +172,7 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                         map_current_copy = map_current.clone();
                         Init_data_map(map_current, map_data);
 
-                        Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector); // add road.
+                        Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
 
                         selection_ID   = -1;
                         selection_ID_2 = -1;
@@ -138,13 +211,46 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                     }
                 }
             }
+            if(selection > 1000)
+            {
+                // ROAD GESTION.
+                if(phase_Value == 0)
+                {
+                    selection_ID = selection;
+
+                    // Show the second point.
+                    for(auto road : road_vector)
+                    {
+                        if(road.road_ID == selection_ID)
+                        {
+                            // Show the line.
+                            cv::line(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(150,150,0), 4, cv::LINE_8);
+                            cv::circle(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                            cv::circle(map_current_copy, cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                            // Show the option area
+
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2),    (int)((road.A->row_idx+road.B->row_idx)/2)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+30 ,(int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Scalar(255, 0, 127), -1, cv::LINE_8); // CLOSE ROAD
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+30), (int)((road.A->row_idx+road.B->row_idx)/2)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+60 ,(int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Scalar(0, 0, 255), -1, cv::LINE_8); // DELETE ROAD
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+60), (int)((road.A->row_idx+road.B->row_idx)/2)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+90 ,(int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Scalar(76, 153, 0), -1, cv::LINE_8); // DELETE ROAD
+
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+30 ,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(180, 180, 180), -1, cv::LINE_8); // SLOW ROAD
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+30), (int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+60,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(100, 100, 100), -1, cv::LINE_8); // STANDARD ROAD
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+60),(int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+90,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(30, 30, 30), -1, cv::LINE_8); // HIGH ROAD
+                            validation_area.fullfill((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2), (int)(road.A->col_idx+road.B->col_idx/2+90), (int)((road.A->row_idx+road.B->row_idx)/2+60));
+
+                            phase_Value = 1;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         else
         {
             // Generate new normal image.
             map_current_copy = map_current.clone();
             Init_data_map(map_current, map_data);
-            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector); // add road.
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
 
             selection      = -1;
             selection_ID   = -1;
@@ -190,11 +296,89 @@ void function_thread_keyboard()
 
     while(true)
     {
+        std::cout << "> ";
         std::cin >> input_user;
         if(input_user.compare("SAVE") == 0)
         {
             std::cout << "Sauvegarde de la session." << std::endl;
             Write_XLSX_file("../data/Hive_Map_Database2.xlsx", node_vector, road_vector);
+        }
+        if(input_user.compare("CLEAR") == 0)
+        {
+            std::cout << "Suppression de toute les routes." << std::endl;
+            clear_road_vector(road_vector);
+            map_current_copy = map_current.clone();
+            Init_data_map(map_current, map_data);
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+        }
+        if(input_user.compare("OPT_SPEED") == 0)
+        {
+            std::cout << "Activer/Desactiver le mode vitesse." << std::endl;
+            opt_speed_view = !opt_speed_view;
+            map_current_copy = map_current.clone();
+            Init_data_map(map_current, map_data);
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+        }
+        if(input_user[0] == '1')
+        {
+            bool found = false;
+            for(auto road : road_vector)
+            {
+                if(road.road_ID == std::stoi(input_user))
+                {
+                    found = true;
+                    map_current_copy = map_current.clone();
+                    Init_data_map(map_current, map_data);
+                    Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+                    // Show the line.
+                    cv::line(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(0,255,255), 10, cv::LINE_8);
+
+                    cv::circle(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                    cv::circle(map_current_copy, cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+
+                    // SHOW INFORMATION 
+                    std::cout << "ROAD : " << road.road_ID << " | " << "SPEED : " << road.max_speed << " | " << \
+                    "LENGTH : " << road.length << " | " << " STATE : ";
+                    if(road.available) std::cout << "OPEN" << std::endl;
+                    else { std::cout << "CLOSE" << std::endl; }
+
+                    break;
+                }
+            }
+            if(!found) std::cout << "La route " << std::stoi(input_user) << " n'existe pas." << std::endl;
+        }
+        if(input_user.compare("ALL_SPEED_LOW") == 0)
+        {
+            std::cout << "Toute les routes sont passé en vitesse LOW." << std::endl;
+            for(int i = 0; i < road_vector.size(); i++)
+            {
+                road_vector[i].max_speed = 3.001;
+            }
+            map_current_copy = map_current.clone();
+            Init_data_map(map_current, map_data);
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+        }
+        if(input_user.compare("ALL_SPEED_STANDARD") == 0)
+        {
+            std::cout << "Toute les routes sont passé en vitesse STANDARD." << std::endl;
+            for(int i = 0; i < road_vector.size(); i++)
+            {
+                road_vector[i].max_speed = 7.001;
+            }
+            map_current_copy = map_current.clone();
+            Init_data_map(map_current, map_data);
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+        }
+        if(input_user.compare("ALL_SPEED_HIGH") == 0)
+        {
+            std::cout << "Toute les routes sont passé en vitesse HIGH." << std::endl;
+            for(int i = 0; i < road_vector.size(); i++)
+            {
+                road_vector[i].max_speed = 10.001;
+            }
+            map_current_copy = map_current.clone();
+            Init_data_map(map_current, map_data);
+            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
         }
     }
 }
@@ -218,7 +402,9 @@ int main()
     Init_data_map(map_current, map_data);
 
     // STEP 5 : Project XLSX data on map_current and map_data.
-    Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector);
+    map_current_copy = map_current.clone();
+    Init_data_map(map_current, map_data);
+    Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view);
 
     // Thread run.
     thread_display  = std::thread(&function_thread_display);

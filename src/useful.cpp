@@ -125,10 +125,18 @@ void Write_XLSX_file(std::string path, std::vector<Data_node>& node_vector, std:
 {
     OpenXLSX::XLDocument doc;
     doc.open(path);
-
-    // ADD ROAD
     auto wks = doc.workbook().worksheet("PATH");
 
+    // CLEAR THE FILE
+    for(auto& row : wks.rows())
+    {
+        for(auto cell : row.cells(8))
+        {
+            cell.value().clear();
+        }
+    }
+
+    // ADD ROAD
     int index = 1;
     for(auto road : road_vector)
     {
@@ -145,7 +153,7 @@ void Write_XLSX_file(std::string path, std::vector<Data_node>& node_vector, std:
         id_cell = "F" + std::to_string(index);
         wks.cell(id_cell).value() = road.length;
         id_cell = "G" + std::to_string(index);
-        wks.cell(id_cell).value() = (int)(road.available);
+        wks.cell(id_cell).value() = (double)(road.available);
         id_cell = "H" + std::to_string(index);
         wks.cell(id_cell).value() = road.max_speed;
         index++;
@@ -173,12 +181,25 @@ void Init_data_map(cv::Mat& map_current, cv::Mat& map_data)
     map_data = new_map_data;
 }
 
-void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<Data_node>& node_vector, cv::Mat& map_current, cv::Mat& map_data, std::vector<Data_road>& road_vector)
+void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<Data_node>& node_vector, cv::Mat& map_current, cv::Mat& map_data, std::vector<Data_road>& road_vector, bool speed_view)
 {    
     // Draw road.
     for(auto& road : road_vector)
     { 
-        cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(182,242,176), 4, cv::LINE_8);
+        if(speed_view)
+        {
+            if(road.max_speed < 6) cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(180, 180, 180), 10, cv::LINE_8);
+            if(road.max_speed > 6 && road.max_speed < 8) cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(102, 102, 255), 10, cv::LINE_8);
+            if(road.max_speed > 8) cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(51, 51, 255), 10, cv::LINE_8);
+        }
+        if(road.available)
+        {
+            cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(182,242,176), 4, cv::LINE_8);
+        }
+        else
+        {
+            cv::line(map_current, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(255, 0, 127), 4, cv::LINE_8);
+        }
         cv::line(map_data   , cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(road.road_ID), 4, cv::LINE_8);
     }
 
@@ -191,4 +212,9 @@ void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<
         cv::circle(map_current, cv::Point((int)(node.col_idx),(int)(node.row_idx)),5,      cv::Scalar(0,0,250), cv::FILLED, 1,0);
         cv::circle(map_data,    cv::Point((int)(node.col_idx),(int)(node.row_idx)),5, cv::Scalar(node.node_ID), cv::FILLED, 1,0);
     }
+}
+
+void clear_road_vector(std::vector<Data_road>& road_vector)
+{
+    road_vector.clear();
 }

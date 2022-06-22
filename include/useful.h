@@ -36,6 +36,16 @@ struct Opencv_area
         down_right_col = c;
         down_right_row = d;
     }
+
+    int option_selection(int idx_col, int idx_row)
+    {
+        if(top_left_col < idx_col && idx_col < top_left_col+30 && top_left_row < idx_row && idx_row < top_left_row+30) return 1;
+        if(top_left_col+30 < idx_col && idx_col < top_left_col+60 && top_left_row < idx_row && idx_row < top_left_row+30) return 2;
+        if(top_left_col+60 < idx_col && idx_col < top_left_col+90 && top_left_row < idx_row && idx_row < top_left_row+30) return 6;
+        if(top_left_col < idx_col && idx_col < top_left_col+30 && top_left_row+30 < idx_row && idx_row < top_left_row+60) return 3;
+        if(top_left_col+30 < idx_col && idx_col < top_left_col+60 && top_left_row+30 < idx_row && idx_row < top_left_row+60) return 4;
+        if(top_left_col+60 < idx_col && idx_col < top_left_col+90 && top_left_row+30 < idx_row && idx_row < top_left_row+60) return 5;
+    }
 };
 
 struct Geographic_point
@@ -92,7 +102,7 @@ struct Data_road
 
     void init_data_road()
     {
-        max_speed = 7.1;
+        max_speed = 7.001;
         available = true;
         
         // Calcul distance between point.
@@ -129,4 +139,5 @@ void Read_YAML_file(std::string path, std::vector<Geographic_point>* info_brut);
 void Write_XLSX_file(std::string path,std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector);
 void Read_JPG_file(std::string path, cv::Mat& img);
 void Init_data_map(cv::Mat& map_current, cv::Mat& map_data);
-void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<Data_node>& node_vector, cv::Mat& map_current, cv::Mat& map_data, std::vector<Data_road>& road_vector);
+void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<Data_node>& node_vector, cv::Mat& map_current, cv::Mat& map_data, std::vector<Data_road>& road_vector, bool speed_view);
+void clear_road_vector(std::vector<Data_road>& road_vector);
