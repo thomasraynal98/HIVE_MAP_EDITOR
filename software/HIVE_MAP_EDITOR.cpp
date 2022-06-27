@@ -17,6 +17,8 @@ std::thread thread_display, thread_keyboard;
 std::vector<Geographic_point> ref_border;
 std::vector<Data_node> node_vector;
 std::vector<Data_road> road_vector;
+std::vector<Data_road*> path_road_vector;
+std::vector<Path_node> graph;
 cv::Mat map_current, map_current_copy, map_data; 
 
 bool opt_speed_view = false;
@@ -25,6 +27,7 @@ int selection_ID   = -1;
 int selection_ID_2 = -1;
 int phase_Value    = 0;
 Opencv_area validation_area(-1,-1,-1,-1);
+Opencv_area navigation_area(-1,-1,-1,-1);
 
 void mouseHandler(int event, int x, int y, int flags, void* param)
 {
@@ -68,7 +71,60 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                         road_vector.push_back(new_road);
                     }
                 }
+
+                phase_Value = 0;
             }
+            else if(navigation_area.is_in(x, y))
+            {
+                // Create new road.
+                path_road_vector.clear();
+                graph.clear();
+                fill_path_node(node_vector, road_vector, graph); 
+                compute_navigation_path(selection_ID, selection_ID_2, graph, road_vector, path_road_vector);
+
+                // DRAW PATH IF ITS GOOD.
+                if(path_road_vector.size() != 0)
+                {
+                    map_current_copy = map_current.clone();
+                    Init_data_map(map_current, map_data);
+                    Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+
+                    double distance_km = 0;
+                    double time_travel = 0;
+                    std::cout << "Chemin entre le node " << selection_ID << " et le node " << selection_ID_2 << " : " << std::endl;
+                    for(auto road : path_road_vector)
+                    {
+                        // Show the line.
+                        cv::line(map_current_copy, cv::Point((int)(road->A->col_idx),(int)(road->A->row_idx)), cv::Point((int)(road->B->col_idx),(int)(road->B->row_idx)), cv::Scalar(105,0,0), 7, cv::LINE_8);
+
+                        cv::circle(map_current_copy, cv::Point((int)(road->A->col_idx),(int)(road->A->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                        cv::circle(map_current_copy, cv::Point((int)(road->B->col_idx),(int)(road->B->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+
+                        distance_km += road->length;
+                        time_travel += (road->length / road->max_speed) * 60;
+                        std::cout << road->road_ID << " > ";
+                    }
+                    std::cout << "END" << std::endl;
+                    std::cout << "La distance total est de " << distance_km << " KM. Un temps de traject de " << std::ceil(time_travel) << " Min(s)." << std::endl;
+                    for(int i = 0; i < node_vector.size(); i++)
+                    {
+                        if(node_vector[i].node_ID == selection_ID)
+                        {
+                            cv::circle(map_current_copy, cv::Point((int)(node_vector[i].col_idx),(int)(node_vector[i].row_idx)),8, cv::Scalar(0,255,0), cv::FILLED, 1,0);
+                        }
+                        if(node_vector[i].node_ID == selection_ID_2)
+                        {
+                            cv::circle(map_current_copy, cv::Point((int)(node_vector[i].col_idx),(int)(node_vector[i].row_idx)),8, cv::Scalar(255,255,0), cv::FILLED, 1,0);
+                        }
+                    }
+                }
+                else
+                {
+                    std::cout << "[!] Aucun chemin disponible entre le node " << selection_ID << " et le node " << selection_ID_2 << "." << std::endl;
+                }  
+            }
+            else { phase_Value = 0; }
+            
         }
 
         if(phase_Value == 1 && selection_ID > 1000)
@@ -206,6 +262,10 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                         cv::rectangle(map_current_copy, cv::Point((int)((idx_col+idx_col2)/2),(int)((idx_row+idx_row2)/2)), cv::Point((int)((idx_col+idx_col2)/2+30),(int)((idx_row+idx_row2)/2+30)), cv::Scalar(0, 252, 124), -1, cv::LINE_8);
                         validation_area.fullfill((int)((idx_col+idx_col2)/2), (int)((idx_row+idx_row2)/2), (int)((idx_col+idx_col2)/2+30), (int)((idx_row+idx_row2)/2+30));
 
+                        // Add Navigation area
+                        cv::rectangle(map_current_copy, cv::Point((int)((idx_col+idx_col2)/2+30),(int)((idx_row+idx_row2)/2)), cv::Point((int)((idx_col+idx_col2)/2+60),(int)((idx_row+idx_row2)/2+30)), cv::Scalar(105, 0, 0), -1, cv::LINE_8);
+                        navigation_area.fullfill((int)((idx_col+idx_col2)/2+30), (int)((idx_row+idx_row2)/2), (int)((idx_col+idx_col2)/2+60), (int)((idx_row+idx_row2)/2+30));
+
                         phase_Value = 2;
                         break;
                     }
@@ -248,14 +308,17 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
         else
         {
             // Generate new normal image.
-            map_current_copy = map_current.clone();
-            Init_data_map(map_current, map_data);
-            Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+            if(phase_Value != 2)
+            {
+                map_current_copy = map_current.clone();
+                Init_data_map(map_current, map_data);
+                Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
 
-            selection      = -1;
-            selection_ID   = -1;
-            selection_ID_2 = -1;
-            phase_Value    = 0;
+                selection      = -1;
+                selection_ID   = -1;
+                selection_ID_2 = -1;
+                phase_Value    = 0;
+            }
         }
     }
 }
@@ -345,7 +408,7 @@ void function_thread_keyboard()
                     break;
                 }
             }
-            if(!found) std::cout << "La route " << std::stoi(input_user) << " n'existe pas." << std::endl;
+            if(!found) std::cout << "[!] La route " << std::stoi(input_user) << " n'existe pas." << std::endl;
         }
         if(input_user.compare("ALL_SPEED_LOW") == 0)
         {
@@ -380,13 +443,75 @@ void function_thread_keyboard()
             Init_data_map(map_current, map_data);
             Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
         }
+        if(input_user.compare("PATH") == 0)
+        {
+            std::cout << "(GREEN) START > ";
+            int index_start = -1;
+            std::cin >> index_start;
+            for(int i = 0; i < node_vector.size(); i++)
+                {
+                    if(node_vector[i].node_ID == index_start)
+                    {
+                        cv::circle(map_current_copy, cv::Point((int)(node_vector[i].col_idx),(int)(node_vector[i].row_idx)),8, cv::Scalar(0,255,0), cv::FILLED, 1,0);
+                    }
+                }
+            std::cout << "(CYAN)  ENDOF > ";
+            int index_endof = -1;
+            std::cin >> index_endof;
+
+            path_road_vector.clear();
+            graph.clear();
+            fill_path_node(node_vector, road_vector, graph); 
+            compute_navigation_path(index_start, index_endof, graph, road_vector, path_road_vector);
+
+            // DRAW PATH IF ITS GOOD.
+            if(path_road_vector.size() != 0)
+            {
+                map_current_copy = map_current.clone();
+                Init_data_map(map_current, map_data);
+                Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+
+                double distance_km = 0;
+                double time_travel = 0;
+                std::cout << "Chemin entre le node " << index_start << " et le node " << index_endof << " : " << std::endl;
+                for(auto road : path_road_vector)
+                {
+                    // Show the line.
+                    cv::line(map_current_copy, cv::Point((int)(road->A->col_idx),(int)(road->A->row_idx)), cv::Point((int)(road->B->col_idx),(int)(road->B->row_idx)), cv::Scalar(105,0,0), 7, cv::LINE_8);
+
+                    cv::circle(map_current_copy, cv::Point((int)(road->A->col_idx),(int)(road->A->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                    cv::circle(map_current_copy, cv::Point((int)(road->B->col_idx),(int)(road->B->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+
+                    distance_km += road->length;
+                    time_travel += (road->length / road->max_speed) * 60;
+                    std::cout << road->road_ID << " > ";
+                }
+                std::cout << "END" << std::endl;
+                std::cout << "La distance total est de " << distance_km << " KM. Un temps de traject de " << std::ceil(time_travel) << " Min(s)." << std::endl;
+                for(int i = 0; i < node_vector.size(); i++)
+                {
+                    if(node_vector[i].node_ID == index_start)
+                    {
+                        cv::circle(map_current_copy, cv::Point((int)(node_vector[i].col_idx),(int)(node_vector[i].row_idx)),8, cv::Scalar(0,255,0), cv::FILLED, 1,0);
+                    }
+                    if(node_vector[i].node_ID == index_endof)
+                    {
+                        cv::circle(map_current_copy, cv::Point((int)(node_vector[i].col_idx),(int)(node_vector[i].row_idx)),8, cv::Scalar(255,255,0), cv::FILLED, 1,0);
+                    }
+                }
+            }
+            else
+            {
+                std::cout << "[!] Aucun chemin disponible entre le node " << index_start << " et le node " << index_endof << "." << std::endl;
+            }
+        }
     }
 }
 
 int main()
 {
     // Initialisation software.
-    std::cout << std::setprecision(10);
+    std::cout << std::setprecision(3);
 
     // STEP 1 : Read initialisation param.
     Read_YAML_file("../data/map_information.yaml", &ref_border);

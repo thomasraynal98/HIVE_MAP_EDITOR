@@ -134,6 +134,28 @@ struct Data_road
     }
 };
 
+struct Path_node{
+    int index_node;
+    Data_node* n;
+    bool closet;
+    double fscore;
+    double gscore;
+    std::vector<Path_node*> connection_data;
+    std::vector<double> connection_weight;
+    Path_node* come_from; 
+
+    Path_node(int id, Data_node* a)
+        : n(a)
+        , closet(false)
+        , fscore(99999)
+        , gscore(99999)
+        , index_node(id)
+        , come_from(NULL)
+        {}
+};
+
+typedef std::tuple<double, Path_node*> TuplePath;
+
 void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector);
 void Read_YAML_file(std::string path, std::vector<Geographic_point>* info_brut);
 void Write_XLSX_file(std::string path,std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector);
@@ -141,3 +163,8 @@ void Read_JPG_file(std::string path, cv::Mat& img);
 void Init_data_map(cv::Mat& map_current, cv::Mat& map_data);
 void Project_all_element(std::vector<Geographic_point>& ref_border, std::vector<Data_node>& node_vector, cv::Mat& map_current, cv::Mat& map_data, std::vector<Data_road>& road_vector, bool speed_view);
 void clear_road_vector(std::vector<Data_road>& road_vector);
+long double toRadians(const long double degree);
+double compute_distance_to_end(Data_node A, Data_node B);
+double compute_weight_road(Data_road* road);void fill_path_node(std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector, std::vector<Path_node>& graph);
+void fill_path_node(std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector, std::vector<Path_node>& graph);
+void compute_navigation_path(int idx_start, int idx_endof, std::vector<Path_node>& graph, std::vector<Data_road>& road_vector, std::vector<Data_road*>& path_road_vector);
