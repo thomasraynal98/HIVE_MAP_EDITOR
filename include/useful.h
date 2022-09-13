@@ -156,6 +156,10 @@ struct Path_node{
 
 typedef std::tuple<double, Path_node*> TuplePath;
 
+void Read_TXT_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector);
+void Write_TXT_file(std::string path, std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector);
+int get_multi_str(std::string str, std::vector<std::string>& vec_str);
+
 void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector);
 void Read_YAML_file(std::string path, std::vector<Geographic_point>* info_brut);
 void Write_XLSX_file(std::string path,std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector);

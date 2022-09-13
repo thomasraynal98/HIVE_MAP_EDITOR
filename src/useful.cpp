@@ -1,6 +1,81 @@
 #include "useful.h"
 #include <OpenXLSX.hpp>
 #include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+void Read_TXT_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector)
+{ 
+    vector_node.clear();
+    road_vector.clear();
+
+    std::ifstream file(path);
+    std::string str; 
+
+    std::string data_type;
+
+    while (std::getline(file, str))
+    {
+        std::vector<std::string> vect_str;
+
+        get_multi_str(str, vect_str);
+        if(vect_str.size() == 1) data_type = vect_str[0];
+        else
+        {
+            if(data_type.compare("NODE") == 0)
+            {
+                Data_node new_data(std::stoi(vect_str[0]), std::stod(vect_str[1]), std::stod(vect_str[2]));
+                vector_node.push_back(new_data);
+            }
+
+            if(data_type.compare("ROAD") == 0)
+            {
+                Data_node* tempo_save_A;
+                Data_node* tempo_save_B;
+                for(int i = 0; i < vector_node.size(); i++)
+                {
+                    if(vector_node[i].node_ID == std::stoi(vect_str[1]))
+                    {
+                        tempo_save_A = &vector_node[i];
+                    }
+                    if(vector_node[i].node_ID == std::stoi(vect_str[2]))
+                    {
+                        tempo_save_B = &vector_node[i];
+                    }
+                }
+                Data_road new_road(std::stoi(vect_str[0]), tempo_save_A, tempo_save_B);
+
+                if(std::stoi(vect_str[6]) == 1) new_road.available = true;
+                else{new_road.available = false;}
+
+                new_road.deg_to_A = std::stod(vect_str[3]);
+                new_road.deg_to_B = std::stod(vect_str[4]);
+                new_road.length = std::stod(vect_str[5]);
+                new_road.max_speed = std::stod(vect_str[7]);
+                road_vector.push_back(new_road);
+            }
+        }
+    }
+}
+
+int get_multi_str(std::string str, std::vector<std::string>& vec_str)
+{
+    vec_str.clear();
+
+    std::string T;
+    std::stringstream X(str);
+
+    int number_of_data = 0;
+
+    while(std::getline(X, T, '|'))
+    {
+        vec_str.push_back(T);
+        number_of_data++;
+    } 
+
+    return number_of_data;
+}
 
 void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector)
 {
@@ -24,9 +99,9 @@ void Read_XLSX_file(std::string path, std::vector<Data_node>& vector_node, std::
             if(cell.value().type() == OpenXLSX::XLValueType::Empty) break;
 
             end = true;
-            if(i == 0) id        = cell.value();
-            if(i == 1) longitude = cell.value();
-            if(i == 2) latitude  = cell.value();
+            if(i == 0) id        = std::stoi(cell.value());
+            if(i == 1) longitude = std::stod(cell.value());
+            if(i == 2) latitude  = std::stod(cell.value());
             i++;
         }
 
@@ -124,6 +199,31 @@ void Read_YAML_file(std::string path, std::vector<Geographic_point>* ref_border)
 
     ref_border->push_back(p1);
     ref_border->push_back(p2);
+}
+
+void Write_TXT_file(std::string path, std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector)
+{
+    std::ofstream myfile;
+    myfile.open(path);
+    myfile << "NODE\n";
+    for(auto node : node_vector)
+    {
+        std::string msg_str;
+        msg_str += std::to_string(node.node_ID) + "|" + std::to_string(node.point.longitude) + "|" + std::to_string(node.point.latitude) + "|\n"; 
+        myfile << msg_str;
+    }
+
+    myfile << "ROAD\n";
+    for(auto road : road_vector)
+    {
+        std::string msg_str;
+        msg_str += std::to_string(road.road_ID) + "|" + std::to_string(road.A->node_ID) + "|" + std::to_string(road.B->node_ID) + "|" + std::to_string(road.deg_to_A) + "|" + std::to_string(road.deg_to_B) + "|" + std::to_string(road.length) + "|"; 
+        if(road.available) msg_str += "1|";
+        else{msg_str += "0|";}
+        msg_str += std::to_string(road.max_speed) + "|\n";
+        myfile << msg_str;
+    }
+    myfile.close();
 }
 
 void Write_XLSX_file(std::string path, std::vector<Data_node>& node_vector, std::vector<Data_road>& road_vector)
