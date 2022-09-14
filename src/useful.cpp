@@ -749,11 +749,15 @@ int get_road_ID_from_pos2(std::vector<Data_road>& vect_road, Geographic_point* c
     double min_dist_m = 99999000;
     double dist_m     = 99999000;
     Geographic_point tempo = Geographic_point(0.0,0.0);
-    int road_id_short;
+    int road_id_short = 0;
 
     for(int i = 0; i < vect_road.size(); i++)
     {
         dist_m = test_function_deploy(&vect_road[i].A->point, &vect_road[i].B->point, curr_pos, &tempo);
+        if(dist_m == min_dist_m)
+        {
+            std::cout << "[?] La distance entre " << road_id_short << " et " << vect_road[i].road_ID << " est égale." << std::endl;
+        }
         if(dist_m < min_dist_m)
         {
             min_dist_m = dist_m;
