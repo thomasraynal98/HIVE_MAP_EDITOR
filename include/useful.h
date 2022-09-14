@@ -154,6 +154,25 @@ struct Path_node{
         {}
 };
 
+struct Robot_position
+{
+    Geographic_point* point;
+    double g_longitude, g_latitude, g_hdg;
+    double l_x, l_y, l_hdg;
+    int64_t g_timestamp, l_timestamp;
+
+    Robot_position()
+        : g_longitude(0.0)
+        , g_latitude(0.0)
+        , g_hdg(0.0)
+        , l_x(0.0)
+        , l_y(0.0)
+        , l_hdg(0.0)
+        , g_timestamp(0)
+        , l_timestamp(0)
+        {point = new Geographic_point(0.0,0.0);}
+};
+
 typedef std::tuple<double, Path_node*> TuplePath;
 
 void Read_TXT_file(std::string path, std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector);
@@ -172,3 +191,14 @@ double compute_distance_to_end(Data_node A, Data_node B);
 double compute_weight_road(Data_road* road);void fill_path_node(std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector, std::vector<Path_node>& graph);
 void fill_path_node(std::vector<Data_node>& vector_node, std::vector<Data_road>& road_vector, std::vector<Path_node>& graph);
 void compute_navigation_path(int idx_start, int idx_endof, std::vector<Path_node>& graph, std::vector<Data_road>& road_vector, std::vector<Data_road*>& path_road_vector);
+double get_min_dist_pos_to_road(Data_road* curr_road, Geographic_point* curr_pos, Geographic_point* projec_pos);
+int get_road_ID_from_pos(std::vector<Data_road>& vect_road, Geographic_point* curr_pos, Geographic_point* projec_pos);
+double get_dist_between_pos(Geographic_point* pos_A, Geographic_point* pos_B);
+long double deg_to_rad(const long double degree);
+void Project_tempo_point(std::vector<Geographic_point>& ref_border, cv::Mat& map_current, double long1, double lat1, double long2, double lat2);
+int get_road_ID_from_pos2(std::vector<Data_road>& vect_road, Geographic_point* curr_pos, Geographic_point* projec_pos);
+double get_angular_distance(Geographic_point* pointA, Geographic_point* pointB);
+double get_bearing(Geographic_point* pointA, Geographic_point* pointB);
+void test_function(Geographic_point* pointA, Geographic_point* pointB, Geographic_point* pointC);
+int get_road_ID_from_pos2(std::vector<Data_road>& vect_road, Geographic_point* curr_pos, Geographic_point* projec_pos);
+double test_function_deploy(Geographic_point* pointA, Geographic_point* pointB, Geographic_point* pointC, Geographic_point* projec_pos);

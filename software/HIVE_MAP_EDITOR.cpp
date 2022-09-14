@@ -506,6 +506,47 @@ void function_thread_keyboard()
                 std::cout << "[!] Aucun chemin disponible entre le node " << index_start << " et le node " << index_endof << "." << std::endl;
             }
         }
+        if(input_user.compare("PROXI") == 0)
+        {
+            std::cout << "(COORDINATE POINT IN FORMAT :LONG|LAT| > ";
+            std::string input_str = "";
+            std::cin >> input_str;
+
+            std::vector<std::string> vect_string;
+            get_multi_str(input_str, vect_string);
+
+            Robot_position input_position = Robot_position();
+            input_position.point->longitude = std::stod(vect_string[0]);
+            input_position.point->latitude  = std::stod(vect_string[1]);
+
+            Geographic_point project_point_debug = Geographic_point(0.0,0.0);
+            int index_road = get_road_ID_from_pos2(road_vector, input_position.point, &project_point_debug);
+
+            for(auto road : road_vector)
+            {
+                if(road.road_ID == index_road)
+                {
+                    map_current_copy = map_current.clone();
+                    Init_data_map(map_current, map_data);
+                    Project_all_element(ref_border, node_vector, map_current_copy, map_data, road_vector, opt_speed_view); // add road.
+                    // Show the line.
+                    cv::line(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)), cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)), cv::Scalar(0,255,255), 10, cv::LINE_8);
+
+                    cv::circle(map_current_copy, cv::Point((int)(road.A->col_idx),(int)(road.A->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+                    cv::circle(map_current_copy, cv::Point((int)(road.B->col_idx),(int)(road.B->row_idx)),5, cv::Scalar(0,0,255), cv::FILLED, 1,0);
+
+                    // SHOW INFORMATION 
+                    std::cout << "ROAD : " << road.road_ID << " | " << "SPEED : " << road.max_speed << " | " << \
+                    "LENGTH : " << road.length << " | " << " STATE : ";
+                    if(road.available) std::cout << "OPEN" << std::endl;
+                    else { std::cout << "CLOSE" << std::endl; }
+
+                    Project_tempo_point(ref_border, map_current_copy, input_position.point->longitude, input_position.point->latitude, project_point_debug.longitude, project_point_debug.latitude);
+
+                    break;
+                }
+            }
+        }
     }
 }
 
