@@ -368,9 +368,10 @@ void function_thread_keyboard()
             std::cout << "Sauvegarde de la session." << std::endl;
             // Write_XLSX_file("../data/Hive_Map_Database2.xlsx", node_vector, road_vector);
             Write_TXT_file("../data/HMD_PARKVESINET_220912.txt", node_vector, road_vector);
+            // system("make push-git-feature"); 
             system("git add ../."); 
             system("git commit -m \"new MAP uplod.\"");
-            system("git push");
+            system("git push origin feature/branch");
             system("cp ../data/HMD_PARKVESINET_220912.txt ../data/HMD.txt");
         }
         if(input_user.compare("CLEAR") == 0)
