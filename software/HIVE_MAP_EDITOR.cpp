@@ -371,6 +371,7 @@ void function_thread_keyboard()
             system("git add ../."); 
             system("git commit -m \"new MAP uplod.\"");
             system("git push");
+            system("cp ../data/HMD_PARKVESINET_220912.txt ../data/HMD.txt");
         }
         if(input_user.compare("CLEAR") == 0)
         {
