@@ -20,4 +20,5 @@ jobs:
           script: |
             cd HIVE/HIVE_MAP_EDITOR
             git pull
+            cd build
             ./PING_CODE
