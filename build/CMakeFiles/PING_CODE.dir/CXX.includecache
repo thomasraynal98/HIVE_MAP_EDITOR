@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mon20/Dev/HIVE_MAP_EDITOR/software/66_exemple.cpp
+iomanip
+-
+sstream
+-
+iostream
+-
+thread
+-
+chrono
+-
+vector
+-
+sio_client.h
+-
+string.h
+-
+math.h
+-
+fstream
+-
+cstdlib
+-
+unistd.h
+-
+

@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++14 -pthread -L/usr/local/lib   CMakeFiles/PING_CODE.dir/software/66_exemple.cpp.o  -o PING_CODE  -Wl,-rpath,/usr/local/lib -lssl -lcrypto /usr/local/lib/libsioclient_tls.so -lpthread 
