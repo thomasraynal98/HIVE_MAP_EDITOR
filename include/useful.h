@@ -92,10 +92,6 @@ struct Data_road
 
     long double toRadians(const long double degree)
     {
-        // cmath library in C++
-        // defines the constant
-        // M_PI as the value of
-        // pi accurate to 1e-30
         long double one_deg = (M_PI) / 180;
         return (one_deg * degree);
     }
@@ -105,32 +101,53 @@ struct Data_road
         max_speed = 7.001;
         available = true;
         
-        // Calcul distance between point.
-        double d = B->point.longitude - A->point.longitude;
-        double x = cos(B->point.latitude) * sin(d);
-        double y = cos(A->point.latitude) * sin(B->point.latitude) - (sin(A->point.latitude) * cos(B->point.latitude) * cos(d));
-        deg_to_B = atan2(x,y) * 180 / 3.14;
-        if(deg_to_B < 0) deg_to_B = 180 + (180 + deg_to_B);
+        length = fget_angular_distance(&A->point, &B->point);
+        deg_to_A = fget_bearing(&B->point, &A->point);
+        deg_to_B = fget_bearing(&A->point, &B->point);
+    }
 
-        deg_to_A = deg_to_B + 180;
-        if(deg_to_A > 360) deg_to_A = deg_to_A - 360;
+    double fget_angular_distance(Geographic_point* pointA, Geographic_point* pointB)
+    {
+        double lat1  = pointA->latitude;
+        double long1 = pointA->longitude;
+        double lat2  = pointB->latitude;
+        double long2 = pointB->longitude;
+        
+        double R = 6371000;
+        double r1 = lat1 * M_PI / 180;
+        double r2 = lat2 * M_PI / 180;
+        double dl = (lat2 - lat1) * M_PI/180;
+        double dd = (long2 - long1) * M_PI/180;
 
-        // Distance.
-        double lat1 = toRadians(A->point.latitude);
-        double long1 = toRadians(A->point.longitude);
-        double lat2 = toRadians(B->point.latitude);
-        double long2 = toRadians(B->point.longitude);
-        // Haversine Formula
-        long double dlong = long2 - long1;
-        long double dlat = lat2 - lat1;
-    
-        long double ans = pow(sin(dlat / 2), 2) +
-                            cos(lat1) * cos(lat2) *
-                            pow(sin(dlong / 2), 2);
-    
-        ans = 2 * asin(sqrt(ans));
-        long double R = 6371;
-        length = ans * R;
+        double a = sin(dl/2) * sin(dl/2) + cos(r1) * cos(r2) * sin(dd/2) * sin(dd/2);
+        double c = 2 * atan2(sqrt(a), sqrt(1-a));
+        // return c;
+        return R * c;
+    }
+
+    double fget_bearing(Geographic_point* pointA, Geographic_point* pointB)
+    {
+        double lat1  = deg_to_rad(pointA->latitude);
+        double long1 = deg_to_rad(pointA->longitude);
+        double lat2  = deg_to_rad(pointB->latitude);
+        double long2 = deg_to_rad(pointB->longitude);
+
+        double y = sin(long2 - long1) * cos(lat2);
+        double x = cos(lat1)*sin(lat2) - sin(lat1)*cos(lat2)*cos(long2 - long1);
+        double o = atan2(y, x);
+
+        if(o*180/M_PI < 0.0)
+        {
+            return 360 + o*180/M_PI;
+        }
+
+        return o*180/M_PI;
+    }
+
+    long double deg_to_rad(const long double degree)
+    {
+        long double one_deg = (M_PI) / 180;
+        return (one_deg * degree);
     }
 };
 

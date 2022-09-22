@@ -9,6 +9,8 @@
 #include <chrono>
 #include <bits/stdc++.h>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "useful.h"
 
@@ -365,7 +367,8 @@ void function_thread_keyboard()
         {
             std::cout << "Sauvegarde de la session." << std::endl;
             // Write_XLSX_file("../data/Hive_Map_Database2.xlsx", node_vector, road_vector);
-            Write_TXT_file("../data/HMD_1.txt", node_vector, road_vector);
+            Write_TXT_file("../data/HMD_PARKVESINET_220912.txt", node_vector, road_vector);
+            system();
         }
         if(input_user.compare("CLEAR") == 0)
         {
@@ -560,10 +563,10 @@ int main()
 
     // STEP 2 : Collect "node" data from XLSX database.
     // Read_XLSX_file("../data/Hive_Map_Database3.xlsx", node_vector, road_vector);
-    Read_TXT_file("../data/HMD_1.txt", node_vector, road_vector);
+    Read_TXT_file("../data/HMD_PARKVESINET_220912.txt", node_vector, road_vector);
 
     // STEP 3 : Import map of the La Defense.
-    Read_JPG_file("../data/02_LaDefense.jpg", map_current);
+    Read_JPG_file("../data/carte_parc_vesinet_page-0001.jpg", map_current);
     map_current_copy = map_current.clone();
 
     // STEP 4 : Init the data map.

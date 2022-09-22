@@ -1,7 +1,12 @@
 %YAML:1.0
 ---
-map_jpg_link: "02_LaDefense.jpg"
-p1_latitude: "48.896500"
-p1_longitude: "2.227423"
-p2_latitude: "48.887304"
-p2_longitude: "2.252200"
+# map_jpg_link: "02_LaDefense.jpg"
+# p1_latitude: "48.896500"
+# p1_longitude: "2.227423"
+# p2_latitude: "48.887304"
+# p2_longitude: "2.252200"
+map_jpg_link: "carte_parc_vesinet_page-0001.jpg"
+p1_latitude: "48.89775"
+p1_longitude: "2.1253444"
+p2_latitude: "48.8956722"
+p2_longitude: "2.129883333"

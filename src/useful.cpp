@@ -614,21 +614,6 @@ long double deg_to_rad(const long double degree)
 
 double get_angular_distance(Geographic_point* pointA, Geographic_point* pointB)
 {
-    // double lat1  = deg_to_rad(pointA->latitude);
-    // double long1 = deg_to_rad(pointA->longitude);
-    // double lat2  = deg_to_rad(pointB->latitude);
-    // double long2 = deg_to_rad(pointB->longitude);
-    
-    // double R = 6371000;
-    // double r1 = lat1 * M_PI / 180;
-    // double r2 = lat2 * M_PI / 180;
-    // double dl = (lat2 - lat1) * M_PI/180;
-    // double dd = (long2 - long1) * M_PI/180;
-
-    // double a = sin(dl/2) * sin(dl/2) + cos(r1) * cos(r2) * sin(dd/2) * sin(dd/2);
-    // double c = 2 * atan2(sqrt(a), sqrt(1-a));
-    // return c;
-
     double lat1  = pointA->latitude;
     double long1 = pointA->longitude;
     double lat2  = pointB->latitude;
