@@ -37,4 +37,12 @@ TARGET_LINK_LIBRARIES(HIVE_MAP_EDITOR
     OpenXLSX::OpenXLSX
     ${OpenCV_LIBS})
 
+# ping code.
+ADD_EXECUTABLE(PING_CODE 
+    software/66_exemple.cpp)
 
+TARGET_LINK_LIBRARIES(PING_CODE
+    ssl
+    crypto 
+    /usr/local/lib/libsioclient_tls.so
+    pthread)

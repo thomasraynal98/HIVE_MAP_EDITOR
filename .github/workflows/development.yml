@@ -20,3 +20,4 @@ jobs:
           script: |
             cd HIVE/HIVE_MAP_EDITOR
             git pull
+            ./PING_CODE
