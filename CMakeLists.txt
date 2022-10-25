@@ -45,8 +45,4 @@ TARGET_LINK_LIBRARIES(PING_CODE
     ssl
     crypto 
     /usr/local/lib/libsioclient_tls.so
-<<<<<<< HEAD
     pthread)
-=======
-    pthread)
->>>>>>> feature/branch
