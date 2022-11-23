@@ -126,7 +126,7 @@ void Write_TXT_file(std::string path, std::vector<Data_node>& node_vector, std::
         msg_str += std::to_string(road.road_ID) + "|" + std::to_string(road.A->node_ID) + "|" + std::to_string(road.B->node_ID) + "|" + std::to_string(road.deg_to_A) + "|" + std::to_string(road.deg_to_B) + "|" + std::to_string(road.length) + "|"; 
         if(road.available) msg_str += "1|";
         else{msg_str += "0|";}
-        msg_str += std::to_string(road.max_speed) + "|" + std::to_string(road.opt_auto) + "\n";
+        msg_str += std::to_string(road.max_speed) + "|" + std::to_string(road.opt_auto) + "|\n";
         myfile << msg_str;
     }
     myfile.close();
