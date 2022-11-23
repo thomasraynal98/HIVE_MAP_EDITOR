@@ -94,7 +94,6 @@ MAP_VISUALISATOR_EXTERNAL_OBJECTS =
 MAP_VISUALISATOR: CMakeFiles/MAP_VISUALISATOR.dir/software/MAP_VISUALISATOR.cpp.o
 MAP_VISUALISATOR: CMakeFiles/MAP_VISUALISATOR.dir/src/useful.cpp.o
 MAP_VISUALISATOR: CMakeFiles/MAP_VISUALISATOR.dir/build.make
-MAP_VISUALISATOR: /usr/local/lib/libOpenXLSX.a
 MAP_VISUALISATOR: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.4.2.0
 MAP_VISUALISATOR: /usr/lib/x86_64-linux-gnu/libopencv_aruco.so.4.2.0
 MAP_VISUALISATOR: /usr/lib/x86_64-linux-gnu/libopencv_bgsegm.so.4.2.0

@@ -94,7 +94,6 @@ HIVE_MAP_EDITOR_EXTERNAL_OBJECTS =
 HIVE_MAP_EDITOR: CMakeFiles/HIVE_MAP_EDITOR.dir/software/HIVE_MAP_EDITOR.cpp.o
 HIVE_MAP_EDITOR: CMakeFiles/HIVE_MAP_EDITOR.dir/src/useful.cpp.o
 HIVE_MAP_EDITOR: CMakeFiles/HIVE_MAP_EDITOR.dir/build.make
-HIVE_MAP_EDITOR: /usr/local/lib/libOpenXLSX.a
 HIVE_MAP_EDITOR: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.4.2.0
 HIVE_MAP_EDITOR: /usr/lib/x86_64-linux-gnu/libopencv_aruco.so.4.2.0
 HIVE_MAP_EDITOR: /usr/lib/x86_64-linux-gnu/libopencv_bgsegm.so.4.2.0

@@ -125,8 +125,7 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                     std::cout << "[!] Aucun chemin disponible entre le node " << selection_ID << " et le node " << selection_ID_2 << "." << std::endl;
                 }  
             }
-            else { phase_Value = 0; }
-            
+            else { phase_Value = 0; }         
         }
 
         if(phase_Value == 1 && selection_ID > 1000)
@@ -193,6 +192,42 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                             "LENGTH : " << road_vector[i].length << " | " << " STATE : ";
                             if(road_vector[i].available) std::cout << "OPEN" << std::endl;
                             else { std::cout << "CLOSE" << std::endl; }
+                            break;
+                        }
+                    }
+                }
+                if(option_selection == 7)
+                {
+                    // NO SURVEILLENCE
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID)
+                        {
+                            road_vector[i].opt_auto = 0;
+                            break;
+                        }
+                    }
+                }
+                if(option_selection == 8)
+                {
+                    // SURVEILLENCE DEMANDER
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID)
+                        {
+                            road_vector[i].opt_auto = 1;
+                            break;
+                        }
+                    }
+                }
+                if(option_selection == 9)
+                {
+                    // PILOTAGE REQUIS
+                    for(int i = 0; i < road_vector.size(); i++)
+                    {
+                        if(road_vector[i].road_ID == selection_ID)
+                        {
+                            road_vector[i].opt_auto = 2;
                             break;
                         }
                     }
@@ -298,7 +333,13 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                             cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+30 ,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(180, 180, 180), -1, cv::LINE_8); // SLOW ROAD
                             cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+30), (int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+60,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(100, 100, 100), -1, cv::LINE_8); // STANDARD ROAD
                             cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+60),(int)((road.A->row_idx+road.B->row_idx)/2+30)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+90,(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Scalar(30, 30, 30), -1, cv::LINE_8); // HIGH ROAD
-                            validation_area.fullfill((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2), (int)(road.A->col_idx+road.B->col_idx/2+90), (int)((road.A->row_idx+road.B->row_idx)/2+60));
+                            
+                            // Option de suivit du robot
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+30 ,(int)((road.A->row_idx+road.B->row_idx)/2+90)), cv::Scalar(224, 224, 224), -1, cv::LINE_8); // NO ASSISTANCE
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+30), (int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+60,(int)((road.A->row_idx+road.B->row_idx)/2+90)), cv::Scalar(153, 255, 255), -1, cv::LINE_8); // SURVEILLENCE REQUIRED
+                            cv::rectangle(map_current_copy, cv::Point((int)((road.A->col_idx+road.B->col_idx)/2+60),(int)((road.A->row_idx+road.B->row_idx)/2+60)), cv::Point((int)((road.A->col_idx+road.B->col_idx))/2+90,(int)((road.A->row_idx+road.B->row_idx)/2+90)), cv::Scalar(51, 51, 255), -1, cv::LINE_8); // NEED HUMAIN
+
+                            validation_area.fullfill((int)((road.A->col_idx+road.B->col_idx)/2), (int)((road.A->row_idx+road.B->row_idx)/2), (int)(road.A->col_idx+road.B->col_idx/2+90), (int)((road.A->row_idx+road.B->row_idx)/2+90));
 
                             phase_Value = 1;
                             break;

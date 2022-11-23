@@ -13,7 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -L/usr/local/lib")
 
 # found package.
 FIND_PACKAGE(OpenCV 4.2 REQUIRED)
-FIND_PACKAGE(OpenXLSX REQUIRED)
+# FIND_PACKAGE(OpenXLSX REQUIRED)
 
 # add the executable exemple.
 ADD_EXECUTABLE(MAP_VISUALISATOR 
@@ -23,7 +23,7 @@ ADD_EXECUTABLE(MAP_VISUALISATOR
 
 TARGET_LINK_LIBRARIES(MAP_VISUALISATOR
     pthread
-    OpenXLSX::OpenXLSX
+    # OpenXLSX::OpenXLSX
     ${OpenCV_LIBS})
 
 # add the executable exemple.
@@ -34,7 +34,7 @@ ADD_EXECUTABLE(HIVE_MAP_EDITOR
 
 TARGET_LINK_LIBRARIES(HIVE_MAP_EDITOR
     pthread
-    OpenXLSX::OpenXLSX
+    # OpenXLSX::OpenXLSX
     ${OpenCV_LIBS})
 
 # ping code.

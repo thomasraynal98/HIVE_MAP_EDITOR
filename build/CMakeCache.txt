@@ -234,7 +234,7 @@ HIVE_MAP_EDITOR_SOURCE_DIR:STATIC=/home/mon20/Dev/HIVE_MAP_EDITOR
 OpenCV_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/opencv4
 
 //The directory containing a CMake configuration file for OpenXLSX.
-OpenXLSX_DIR:PATH=/usr/local/lib/cmake/OpenXLSX
+OpenXLSX_DIR:PATH=OpenXLSX_DIR-NOTFOUND
 
 
 ########################

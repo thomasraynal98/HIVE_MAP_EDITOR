@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS =  -std=c++14 -pthread -L/usr/local/lib   -std=gnu++17
 
-CXX_DEFINES = -DOPENXLSX_STATIC_DEFINE
+CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/mon20/Dev/HIVE_MAP_EDITOR/include -isystem /usr/local/include/OpenXLSX -isystem /usr/include/opencv4 
+CXX_INCLUDES = -I/home/mon20/Dev/HIVE_MAP_EDITOR/include -isystem /usr/include/opencv4 
 
