@@ -46,20 +46,6 @@ stdlib.h
 useful.h
 /home/mon20/Dev/HIVE_MAP_EDITOR/software/useful.h
 
-/home/mon20/Dev/HIVE_MAP_EDITOR/src/useful.cpp
-useful.h
-/home/mon20/Dev/HIVE_MAP_EDITOR/src/useful.h
-bits/stdc++.h
--
-iostream
--
-fstream
--
-string
--
-math.h
--
-
 /usr/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp
 /usr/include/opencv4/opencv2/opencv2/core.hpp
