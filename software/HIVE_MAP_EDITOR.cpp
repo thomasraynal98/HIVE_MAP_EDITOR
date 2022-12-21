@@ -162,7 +162,7 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                     // LOW ROAD
                     for(int i = 0; i < road_vector.size(); i++)
                     {
-                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 1.001; break;}
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 1.0; break;}
                     }
                 }
                 if(option_selection == 4)
@@ -170,7 +170,7 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                     // MID ROAD
                     for(int i = 0; i < road_vector.size(); i++)
                     {
-                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 2.001; break;}
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 2.0; break;}
                     }
                 }
                 if(option_selection == 5)
@@ -178,7 +178,7 @@ void mouseHandler(int event, int x, int y, int flags, void* param)
                     // HIGH ROAD
                     for(int i = 0; i < road_vector.size(); i++)
                     {
-                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 3.001; break;}
+                        if(road_vector[i].road_ID == selection_ID) { road_vector[i].max_speed = 3.0; break;}
                     }
                 }
                 if(option_selection == 6)
@@ -470,7 +470,7 @@ void function_thread_keyboard()
             std::cout << "Toute les routes sont passé en vitesse LOW." << std::endl;
             for(int i = 0; i < road_vector.size(); i++)
             {
-                road_vector[i].max_speed = 1.001;
+                road_vector[i].max_speed = 1.0;
             }
             map_current_copy = map_current.clone();
             Init_data_map(map_current, map_data);
@@ -481,7 +481,7 @@ void function_thread_keyboard()
             std::cout << "Toute les routes sont passé en vitesse STANDARD." << std::endl;
             for(int i = 0; i < road_vector.size(); i++)
             {
-                road_vector[i].max_speed = 2.001;
+                road_vector[i].max_speed = 2.0;
             }
             map_current_copy = map_current.clone();
             Init_data_map(map_current, map_data);
@@ -492,7 +492,7 @@ void function_thread_keyboard()
             std::cout << "Toute les routes sont passé en vitesse HIGH." << std::endl;
             for(int i = 0; i < road_vector.size(); i++)
             {
-                road_vector[i].max_speed = 3.001;
+                road_vector[i].max_speed = 3.0;
             }
             map_current_copy = map_current.clone();
             Init_data_map(map_current, map_data);
