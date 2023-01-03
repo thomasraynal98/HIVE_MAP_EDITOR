@@ -616,11 +616,11 @@ int main()
     // Read_XLSX_file("../data/Hive_Map_Database3.xlsx", node_vector, road_vector);
     // Read_TXT_file("../data/HMD_PARKVESINET_220912.txt", node_vector, road_vector);
     // Read_TXT_file("../data/COURDIMANCHE.txt", node_vector, road_vector);
-    Read_TXT_file("../data/LADEFENSE1.txt", node_vector, road_vector);
+    Read_TXT_file("../data/LADEFENSEFINAL.txt", node_vector, road_vector);
 
     // STEP 3 : Import map of the La Defense.
     // Read_JPG_file("../data/carte_parc_vesinet_page-0001.jpg", map_current);
-    Read_JPG_file("../data/LADEFENSE1.jpg", map_current);
+    Read_JPG_file("../data/LADEFENSEFINAL.jpg", map_current);
     map_current_copy = map_current.clone();
 
     // STEP 4 : Init the data map.
