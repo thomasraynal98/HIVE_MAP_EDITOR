@@ -28,6 +28,12 @@ opencv2/highgui.hpp
 opencv2/imgproc.hpp
 -
 
+/home/mon20/Dev/HIVE_MAP_EDITOR/software/MAP_VISUALISATOR.cpp
+opencv2/highgui.hpp
+-
+useful.h
+/home/mon20/Dev/HIVE_MAP_EDITOR/software/useful.h
+
 /home/mon20/Dev/HIVE_MAP_EDITOR/src/useful.cpp
 useful.h
 /home/mon20/Dev/HIVE_MAP_EDITOR/src/useful.h
